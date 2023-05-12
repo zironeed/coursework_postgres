@@ -10,7 +10,7 @@ def user_input() -> list:
                              "Введите 'стоп', когда закончие ввод.\n")
 
         if company_name.lower() == 'стоп':
-            print(f'Были введены следующие названия:')
+            print(f'Были введены следующие компании:')
             print(*companies_list, sep=', ')
 
             return companies_list
@@ -19,7 +19,7 @@ def user_input() -> list:
 
         if len(companies_list) >= 10:
             print(f'Вы ввели максимальное количество компаний. Начинаю работу\n')
-            print(f'Были введены следующие названия:')
+            print(f'Были введены следующие компании:')
             print(*companies_list, sep=', ')
 
             return companies_list

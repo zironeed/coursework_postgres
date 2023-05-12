@@ -7,21 +7,35 @@ class VacancyManager:
     """Класс для сбора информации о вакансиях"""
     __vacancy_url = 'https://api.hh.ru/vacancies'
 
-    def get_vacancy_data(self, id: str) -> list[dict]:
+    def get_vacancy_data(self, id: list) -> list[dict]:
         """
         Метод для получения информации о вакансиях
         :param id: ID компании, которое используется для поиска вакансий
         :return: Полученная информация о вакансиях (список словарей)
         """
-        params = {
-            "employer_id": id,
-            "page": 5,
-            "per_page": 100
-        }
+        print(f'Начинаю сбор вакансий. . .')
 
-        response = requests.get(self.__vacancy_url, params=params).json()['items']
+        data_list = []
 
-        return response
+        for page in range(0, 5):
+            params = {
+                "employer_id": id,
+                "page": page,
+                "per_page": 100
+            }
+
+            response = requests.get(self.__vacancy_url, params=params)
+
+            if response.ok:
+                data = response.json()['items']
+                if len(data) == 0:
+                    break
+                data_list.extend(data)
+
+            else:
+                break
+
+        return data_list
 
     @staticmethod
     def save_as_csv(datas: list[dict]) -> None:
@@ -39,6 +53,7 @@ class VacancyManager:
             writer.writeheader()
 
             for data in datas:
+                print(datas)
                 if data['salary'] is None:
                     salary_from = 0
                     salary_to = 0
@@ -53,3 +68,5 @@ class VacancyManager:
                     'salary_from': f'{float(salary_from)}',
                     'salary_to': f'{float(salary_to)}',
                 })
+
+        print('Выполнено.')

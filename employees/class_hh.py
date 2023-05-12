@@ -12,6 +12,8 @@ class HHManager:
         :param company: Ключевое слово (название компании), которое используется для поиска
         :return: Полученная информация о компании (список словарей)
         """
+        print(f'Сбор информации о {company}. . .')
+
         params = {
             "text": company.lower(),
             "per_page": 10,
@@ -23,22 +25,23 @@ class HHManager:
         return response
 
     @staticmethod
-    def get_employee_id(company: str, datas: list[dict]) -> str:
+    def get_employee_id(datas: list[dict]) -> list:
         """
         Метод для получения ID компании
-        :param company: Название компании
         :param datas: Список словарей, из которого нужно достать ID
-        :return: ID компании
+        :return: Список, содержащий ID компаний
         """
+        id_list = []
+
         for data in datas:
-            if data['name'].lower() == company.lower():
-                return data['id']
+            id_list.append(data['id'])
+
+        return id_list
 
     @staticmethod
     def save_as_csv(datas: list[dict]) -> None:
         """
         Сохранение информации о компании в виде .csv файла
-        :param file_name: Имя файла
         :param datas: Информация о компании
         :return: Nothing :)
         """
@@ -57,4 +60,6 @@ class HHManager:
                     'url': str(data.get('alternate_url')),
                     'vacancy_count': int(data.get('open_vacancies'))
                 })
+
+        print('Выполнено.')
     
