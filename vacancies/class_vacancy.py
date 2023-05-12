@@ -25,8 +25,13 @@ class VacancyManager:
 
     @staticmethod
     def save_as_csv(datas: list[dict]) -> None:
-        """"""
+        """
+        Сохранение вакансий в .csv файл
+        :param datas: Список словарей, содержащий информацию о вакансиях
+        :return: Nothing :)
+        """
         file_name = "vacancy.csv"
+
         with open(file_name, 'w', newline='', encoding='UTF-8') as file:
             fieldnames = ['id', 'title', 'url', 'salary_from', 'salary_to']
 
