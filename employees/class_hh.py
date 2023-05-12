@@ -23,7 +23,7 @@ class HHManager:
         return response
 
     @staticmethod
-    def get_employee_id(company: str, datas: list[dict]) -> list:
+    def get_employee_id(company: str, datas: list[dict]) -> str:
         """
         Метод для получения ID компании
         :param company: Название компании

@@ -7,7 +7,7 @@ class VacancyManager:
     """Класс для сбора информации о вакансиях"""
     __vacancy_url = 'https://api.hh.ru/vacancies'
 
-    def get_vacancy_data(self, id: list) -> list[dict]:
+    def get_vacancy_data(self, id: str) -> list[dict]:
         """
         Метод для получения информации о вакансиях
         :param id: ID компании, которое используется для поиска вакансий
