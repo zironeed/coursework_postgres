@@ -3,7 +3,7 @@ import csv
 
 
 class HHManager:
-    """Класс для сайта hh.ru"""
+    """Класс для сбора информации о компании"""
     __employee_url = 'https://api.hh.ru/employers?only_with_vacancies=true'
 
     def get_employee_data(self, company: str) -> list[dict]:
@@ -23,21 +23,26 @@ class HHManager:
         return response
 
     @staticmethod
-    def get_employee_id(company: str, datas: list[dict]) -> str:
+    def get_employee_id(company: str, datas: list[dict]) -> list:
         """
         Метод для получения ID компании
         :param company: Название компании
         :param datas: Список словарей, из которого нужно достать ID
-        :return:
+        :return: ID компании
         """
         for data in datas:
             if data['name'].lower() == company.lower():
                 return data['id']
 
     @staticmethod
-    def save_as_csv(file_name: str, datas: list[dict]) -> None:
-        """"""
-        file_name = f"{file_name.strip()}.csv"
+    def save_as_csv(datas: list[dict]) -> None:
+        """
+        Сохранение информации о компании в виде .csv файла
+        :param file_name: Имя файла
+        :param datas: Информация о компании
+        :return: Nothing :)
+        """
+        file_name = "employee.csv"
 
         with open(file_name, 'w', newline='', encoding='UTF-8') as file:
             fieldnames = ['id', 'title', 'url', 'vacancy_count']
