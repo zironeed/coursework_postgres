@@ -13,20 +13,39 @@ class VacancyManager:
         :param id: ID компании, которое используется для поиска вакансий
         :return: Полученная информация о вакансиях (список словарей)
         """
-        params = {
-            "employer_id": id,
-            "page": 5,
-            "per_page": 100
-        }
+        print(f'Начинаю сбор вакансий. . .')
 
-        response = requests.get(self.__vacancy_url, params=params).json()['items']
+        data_list = []
 
-        return response
+        for page in range(0, 5):
+            params = {
+                "employer_id": id,
+                "page": page,
+                "per_page": 100
+            }
+
+            response = requests.get(self.__vacancy_url, params=params)
+
+            if response.ok:
+                data = response.json()['items']
+                if len(data) == 0:
+                    break
+                data_list.extend(data)
+
+            else:
+                break
+
+        return data_list
 
     @staticmethod
     def save_as_csv(datas: list[dict]) -> None:
-        """"""
+        """
+        Сохранение вакансий в .csv файл
+        :param datas: Список словарей, содержащий информацию о вакансиях
+        :return: Nothing :)
+        """
         file_name = "vacancy.csv"
+
         with open(file_name, 'w', newline='', encoding='UTF-8') as file:
             fieldnames = ['id', 'title', 'url', 'salary_from', 'salary_to']
 
@@ -48,3 +67,5 @@ class VacancyManager:
                     'salary_from': f'{float(salary_from)}',
                     'salary_to': f'{float(salary_to)}',
                 })
+
+        print('Выполнено.')

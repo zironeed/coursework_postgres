@@ -1,17 +1,25 @@
-def user_input():
+def user_input() -> list:
     """
     Ввод пользователем интересующих его компаний
     :return: Список компаний
     """
+    companies_list = []
+
     while True:
-        input_in_str = input('Введите через запятую интересующие вас компании (10 компаний)\n')
-        companies_list = input_in_str.split(', ')
+        company_name = input("Введите названия интересующих вас компаний (10 компаний). "
+                             "Введите 'стоп', когда закончие ввод.\n")
 
-        if len(companies_list) < 10 or len(companies_list) > 10:
-            print(f'Введите 10 интересующих вас компаний (было введено {len(companies_list)} названий)\n')
-            continue
-
-        else:
-            print('Поиск по следующим компаниям:', end=' ')
+        if company_name.lower() == 'стоп':
+            print(f'Были введены следующие компании:')
             print(*companies_list, sep=', ')
+
+            return companies_list
+
+        companies_list.append(company_name)
+
+        if len(companies_list) >= 10:
+            print(f'Вы ввели максимальное количество компаний. Начинаю работу\n')
+            print(f'Были введены следующие компании:')
+            print(*companies_list, sep=', ')
+
             return companies_list
