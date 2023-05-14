@@ -53,7 +53,6 @@ class VacancyManager:
             writer.writeheader()
 
             for data in datas:
-                print(datas)
                 if data['salary'] is None:
                     salary_from = 0
                     salary_to = 0
