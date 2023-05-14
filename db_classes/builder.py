@@ -4,7 +4,7 @@ import psycopg2
 class DBBuilder:
     """Класс для создания БД и таблиц"""
     def __init__(self, db_name: str) -> None:
-        self.db_name = db_name
+        self.__db_name = db_name
 
     def create_database(self) -> None:
         """
@@ -17,13 +17,13 @@ class DBBuilder:
 
         conn.autocommit = True
 
-        query = f'CREATE DATABASE {self.db_name}'
+        query = f'CREATE DATABASE {self.__db_name}'
         cursor.execute(query)
 
         cursor.close()
         conn.close()
 
-        print(f'База данных {self.db_name} создана.')
+        print(f'База данных {self.__db_name} создана.')
 
     def create_tables(self) -> None:
         """
@@ -31,7 +31,7 @@ class DBBuilder:
         """
         print("Создание таблиц. . .")
 
-        conn = psycopg2.connect(dbname=f"{self.db_name}", user="postgres", password="12345", host="localhost")
+        conn = psycopg2.connect(dbname=f"{self.__db_name}", user="postgres", password="12345", host="localhost")
         cursor = conn.cursor()
 
         conn.autocommit = True
@@ -56,3 +56,8 @@ class DBBuilder:
         conn.close()
 
         print("Создание таблиц завершено.")
+
+    @property
+    def name(self):
+        """Возвращает имя базы данных"""
+        return self.__db_name
