@@ -45,8 +45,8 @@ class DBBuilder:
         query_vacancy = "CREATE TABLE vacancies (" \
                         "employee_id int REFERENCES employees (id)," \
                         "title varchar NOT NULL," \
-                        "url varchar NOT NULL" \
-                        "salary_from float" \
+                        "url varchar NOT NULL," \
+                        "salary_from float," \
                         "salary_to float)"
 
         cursor.execute(query_employee)
