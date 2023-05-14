@@ -44,7 +44,7 @@ class DBManager:
 
         print("Данные занесены в базу.")
 
-    def get_companies_and_vacancies_count(self):
+    def get_companies_and_vacancies_count(self) -> None:
         """Вывод компаний и количества их вакансий"""
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
@@ -55,7 +55,7 @@ class DBManager:
             cur.close()
         con.close()
 
-    def get_all_vacancies(self):
+    def get_all_vacancies(self) -> None:
         """Вывод всех вакансий с указанием компании, ссылки на вакансию и зарплату"""
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
@@ -67,7 +67,7 @@ class DBManager:
             cur.close()
         con.close()
 
-    def get_avg_salary(self):
+    def get_avg_salary(self) -> None:
         """Вывод средней зарплаты по вакансиям"""
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
@@ -78,7 +78,7 @@ class DBManager:
             cur.close()
         con.close()
 
-    def get_vacancies_with_higher_salary(self):
+    def get_vacancies_with_higher_salary(self) -> None:
         """Вывод вакансий с зарплатой выше среднего"""
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
@@ -92,13 +92,26 @@ class DBManager:
             cur.close()
         con.close()
 
-    def get_vacancies_with_keyword(self, keyword: str):
+    def get_vacancies_with_keyword(self) -> None:
         """Вывод всех вакансий, в названии которых содержатся переданные в метод слова"""
+        keyword = input("Введите ключевое слово")
+
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
 
                 query = f"SELECT * FROM vacancies" \
                         f"WHERE title LIKE '%{keyword}%'"
+                cur.execute(query)
+
+            cur.close()
+        con.close()
+
+    def destroy(self):
+        """Удаление базы данных"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = f"DROP DATABASE {self.__db_name}"
                 cur.execute(query)
 
             cur.close()
