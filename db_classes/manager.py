@@ -4,7 +4,11 @@ import csv
 
 class DBManager:
     """Класс, используемый для работы с данными"""
-    def get_csv(self, path: str) -> list:
+    def __init__(self, name: str) -> None:
+        self.__db_name = name
+
+    @staticmethod
+    def get_csv(path: str) -> list:
         """Получение данных из .csv файла"""
         data = []
         count = 0
@@ -20,11 +24,11 @@ class DBManager:
 
         return data
 
-    def insert_data(self, name: str, args_emp: list, args_vac: list) -> None:
+    def insert_data(self, args_emp: list, args_vac: list) -> None:
         """Внесение данных в БД"""
         print("Вношу данные в базу. . .")
 
-        with psycopg2.connect(host='localhost', database=f'{name}', user='postgres', password='12345') as con:
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
                 count_emp = ''.join('%s,' * len(args_emp[0]))
                 count_vac = ''.join('%s,' * len(args_vac[0]))
@@ -35,21 +39,67 @@ class DBManager:
                 cur.executemany(query_employee, args_emp)
                 cur.executemany(query_vacancies, args_vac)
 
+            cur.close()
         con.close()
 
         print("Данные занесены в базу.")
 
     def get_companies_and_vacancies_count(self):
-        pass
+        """Вывод компаний и количества их вакансий"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = f"SELECT title, vacancy_count FROM employees"
+                cur.execute(query)
+
+            cur.close()
+        con.close()
 
     def get_all_vacancies(self):
-        pass
+        """Вывод всех вакансий с указанием компании, ссылки на вакансию и зарплату"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = f"SELECT title, employees.title, url, salary_from, salaty_to FROM vacancies" \
+                        f"JOIN employees ON vacancies.employee_id=employees.id"
+                cur.execute(query)
+
+            cur.close()
+        con.close()
 
     def get_avg_salary(self):
-        pass
+        """Вывод средней зарплаты по вакансиям"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = f"SELECT AVG((salary_from + salary_to)/2) AS average FROM vacancies"
+                cur.execute(query)
+
+            cur.close()
+        con.close()
 
     def get_vacancies_with_higher_salary(self):
-        pass
+        """Вывод вакансий с зарплатой выше среднего"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = """SELECT title, salary_from, salary_to, url
+                            FROM vacancies
+                            WHERE salary_from > (SELECT AVG((salary_from + salary_to) / 2) FROM vacancies)
+                            ORDER BY salary_from DESC"""
+                cur.execute(query)
+
+            cur.close()
+        con.close()
 
     def get_vacancies_with_keyword(self, keyword: str):
-        pass
+        """Вывод всех вакансий, в названии которых содержатся переданные в метод слова"""
+        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
+            with con.cursor() as cur:
+
+                query = f"SELECT * FROM vacancies" \
+                        f"WHERE title LIKE '%{keyword}%'"
+                cur.execute(query)
+
+            cur.close()
+        con.close()
