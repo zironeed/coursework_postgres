@@ -1,4 +1,3 @@
-import psycopg2
 from employees.class_hh import HHManager
 from vacancies.class_vacancy import VacancyManager
 from utils.user_input import user_input
