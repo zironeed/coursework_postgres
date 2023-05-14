@@ -13,7 +13,7 @@ class DBManager:
         data = []
         count = 0
 
-        with open(path) as csv_file:
+        with open(path, encoding='utf-8') as csv_file:
             file = csv.reader(csv_file, delimiter=',')
 
             for line in file:
@@ -51,6 +51,10 @@ class DBManager:
 
                 query = f"SELECT title, vacancy_count FROM employees"
                 cur.execute(query)
+                result = cur.fetchall()
+
+                for line in result:
+                    print(line)
 
             cur.close()
         con.close()
@@ -60,9 +64,14 @@ class DBManager:
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
 
-                query = f"SELECT title, employees.title, url, salary_from, salaty_to FROM vacancies" \
-                        f"JOIN employees ON vacancies.employee_id=employees.id"
+                query = """SELECT vacancies.title, employees.title, vacancies.url, vacancies.salary_from, 
+                vacancies.salary_to FROM vacancies 
+                JOIN employees ON vacancies.employee_id=employees.id"""
                 cur.execute(query)
+                result = cur.fetchall()
+
+                for line in result:
+                    print(line)
 
             cur.close()
         con.close()
@@ -74,6 +83,10 @@ class DBManager:
 
                 query = f"SELECT AVG((salary_from + salary_to)/2) AS average FROM vacancies"
                 cur.execute(query)
+                result = cur.fetchall()
+
+                for line in result:
+                    print(line)
 
             cur.close()
         con.close()
@@ -88,31 +101,43 @@ class DBManager:
                             WHERE salary_from > (SELECT AVG((salary_from + salary_to) / 2) FROM vacancies)
                             ORDER BY salary_from DESC"""
                 cur.execute(query)
+                result = cur.fetchall()
+
+                for line in result:
+                    print(line)
 
             cur.close()
         con.close()
 
     def get_vacancies_with_keyword(self) -> None:
         """Вывод всех вакансий, в названии которых содержатся переданные в метод слова"""
-        keyword = input("Введите ключевое слово")
+        keyword = input("Введите ключевое слово\n")
 
         with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
             with con.cursor() as cur:
 
-                query = f"SELECT * FROM vacancies" \
-                        f"WHERE title LIKE '%{keyword}%'"
+                query = f"""SELECT * FROM vacancies 
+                WHERE title LIKE '%{keyword}%'"""
                 cur.execute(query)
+                result = cur.fetchall()
+
+                for line in result:
+                    print(line)
 
             cur.close()
         con.close()
 
-    def destroy(self):
-        """Удаление базы данных"""
-        with psycopg2.connect(host='localhost', database=f'{self.__db_name}', user='postgres', password='12345') as con:
-            with con.cursor() as cur:
-
-                query = f"DROP DATABASE {self.__db_name}"
-                cur.execute(query)
-
-            cur.close()
-        con.close()
+    #def destroy(self):
+    #    """Удаление базы данных"""
+    #    with psycopg2.connect(host='localhost', database=f'postgres', user='postgres', password='12345') as con:
+    #        with con.cursor() as cur:
+    #
+    #            query = f"""SELECT pg_terminate_backend(pg_stat_activity.pid)
+    #            FROM pg_stat_activity
+    #            WHERE pg_stat_activity.datname = {self.__db_name}
+    #            AND pid <> pg_backend_pid();"""
+    #
+    #            cur.execute(query)
+    #
+    #        cur.close()
+    #    con.close()
