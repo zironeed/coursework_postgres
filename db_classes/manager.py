@@ -1,5 +1,6 @@
 import psycopg2
 import csv
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 
 class DBManager:
@@ -127,17 +128,16 @@ class DBManager:
             cur.close()
         con.close()
 
-    #def destroy(self):
-    #    """Удаление базы данных"""
-    #    with psycopg2.connect(host='localhost', database=f'postgres', user='postgres', password='12345') as con:
-    #        with con.cursor() as cur:
-    #
-    #            query = f"""SELECT pg_terminate_backend(pg_stat_activity.pid)
-    #            FROM pg_stat_activity
-    #            WHERE pg_stat_activity.datname = {self.__db_name}
-    #            AND pid <> pg_backend_pid();"""
-    #
-    #            cur.execute(query)
-    #
-    #        cur.close()
-    #    con.close()
+    def destroy(self):
+        """Удаление базы данных"""
+        con = psycopg2.connect(host='localhost', database='north', user='postgres', password='12345')
+        cur = con.cursor()
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+
+        query = f"""DROP DATABASE {self.__db_name}"""
+
+        cur.execute(query)
+
+        cur.close()
+        con.close()

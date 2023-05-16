@@ -59,7 +59,7 @@ def main():
             db_manager.get_vacancies_with_keyword()
 
         elif user_query == 6:
-        #    db_manager.destroy()
+            db_manager.destroy()
             quit()
 
 
